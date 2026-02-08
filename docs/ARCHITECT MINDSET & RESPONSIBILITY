@@ -1,15 +1,12 @@
 A solution architect is responsible for decisions, not diagrams.
 
-Key responsibilities:
+## Key responsibilities:
 
-Translate business goals into technical systems
+ - Translate business goals into technical systems
+ - Balance scalability, security, reliability, and cost
+ - Own architectural trade-offs and long-term consequences
+ - Design systems that can evolve, not just work today
 
-Balance scalability, security, reliability, and cost
+## Core principle:
 
-Own architectural trade-offs and long-term consequences
-
-Design systems that can evolve, not just work today
-
-Core principle:
-
-Every architectural decision introduces a trade-off. The role of the architect is to make those trade-offs explicit and intentional.
+   Every architectural decision introduces a trade-off. The role of the architect is to make those trade-offs explicit and intentional.
