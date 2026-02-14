@@ -1,0 +1,27 @@
+Scalability refers to allowing your system to handle growing workloads, which can apply to multiple layers, such as the application 
+server, web app, and database. Scalability helps you fulfill user demand without impacting application performance, resulting
+in higher business returns.
+
+Horizontal scaling: In horizontal scaling, the team adds more servers to handle increasing workloads. Let’s say your application can
+handle 1,000 requests per second with two server instances, for example. As your user base grows, the application receives 2,000 requests per second, which 
+means you may want to double your application instances to four to handle the increased load.
+
+Vertical scaling:It is a practice in which the team adds additional computer storage capacity and memory power to the same server 
+to handle increasing workloads.The vertical scaling model may be less cost-effective, however; when you purchase hardware with 
+more computing power and memory capacity, the cost increases exponentially. Vertical scaling is most commonly used to scale relational database servers.
+
+Predictive scaling: advanced approach to managing application workloads, particularly useful for scenarios with predictable traffic patterns, 
+like those seen on e-commerce websites. By analyzing historical data, organizations can forecast traffic trends and adjust their resources
+accordingly. 
+
+Reactive scaling: It is essential for dealing with unforeseen traffic surges, which might be significantly higher than the norm and 
+could be triggered by events like flash sales. Under standing the unique traffic patterns for different pages of a website, as well 
+as the user navigation path, is crucial for effectively managing these spikes. By identifying which pages can be cached or which 
+queries are read-intensive, organizations can strategically offload traffic from the web layer, utilizing content distribution networks 
+to manage static content.
+
+Scaling static content: Static content, such as images and videos, plays a crucial role in engaging users on your website. 
+However, if not managed properly, these elements can significantly slow down your application’s performance. 
+CDN providers (such as Akamai, Amazon CloudFront, Microsoft Azure CDN, and Google CDN) provide locations across the globe where static content 
+can be cached from the web server near the user’s location, reducing latency.To scale static content storage, it is recommended to use 
+object storage, such as Amazon S3, or an on-premises custom origin, which can grow independently of memory and computer capabilities.
