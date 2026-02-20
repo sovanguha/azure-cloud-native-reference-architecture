@@ -75,3 +75,18 @@ In such a situation, you can retire the existing workload and take a fresh appro
   organization operates in a highly regulated sector.
 • Vendor lock-in: Relying too much on a single cloud provider’s technologies and services can lead to difficulties in switching providers 
   in the future, potentially affecting flexibility and cost-efficiency.
+
+## Cloud Migration Steps:
+
+![Cloud Migration Steps](./diagrams/Cloud-migration-steps.png)
+
+The cloud migration steps are the following:
+• Discover: Discovery of cloud migration portfolios and on-premises workloads
+• Analyze: Analyze discovered data and workloads
+• Plan: Plan the migration to the cloud and define the migration strategy
+• Design: Design the application as per the migration strategy
+• Migrate: Execute the migration strategy
+• Integrate: Integrate with other application and system dependencies
+• Validate: Validate functionality after migration
+• Operate: Plan to operate in the cloud
+• Optimize: Optimize your workload for the cloud
