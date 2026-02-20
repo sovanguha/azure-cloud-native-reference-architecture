@@ -25,7 +25,7 @@ The following common reasons warrant the use of the replatform technique:
 • To get the benefits of managed services that are available from cloud vendors, such as managed storage, databases, application deployment, 
 and monitoring tools.
 
-Refactor:
+## Refactor:
 The refactor method involves rearchitecting and rewriting an application before migrating it to the cloud to make it a cloud-native application. 
 In refactoring, you change the application to a more modular design, such as from monolithic to microservices. Refactoring to microservices 
 helps organizations create small independent teams that can take complete ownership, thus increasing the speed of innovation.
@@ -39,26 +39,26 @@ Common examples of refactoring include the following:
 • Recoding application components
 • Data warehouse modernization to connect organizations to customers
 
-Repurchase:
+## Repurchase:
 When your IT resources and projects are migrated to the cloud, you may need servers or applications requiring you to purchase a cloud-compatible 
 license or release. For example, the current on-premises license for your application might need to be validated when you run the application in 
 the cloud.
 There are multiple ways to address such scenarios of licensing. You can purchase a new license and continue using your application in the cloud, 
 or drop the existing one and replace it with another one in the cloud. This replacement could be a SaaS offering of the same application.
 
-Retain:
+## Retain:
 You might encounter a few applications in your on-premises environment that are essential for your business but unsuitable for migration because 
 of technical reasons, such as the OS/application not being supported on a cloud platform. In such situations, your application cannot be migrated 
 to the cloud but you can continue running it in your on-premises environment.
 
-Retire:
+## Retire:
 While migrating to the cloud, you may discover the following:
 • Rarely used applications
 • Applications consuming an excessive amount of server capacity
 • Applications that may not be required due to cloud incompatibility
 In such a situation, you can retire the existing workload and take a fresh approach that is more cloud-native.
 
-Possible risks include:
+## Possible risks include:
 • Data loss and leakage: During the migration, sensitive data can be exposed to risks if not properly encrypted and managed. 
   Ensuring data integrity and security during the migration process is crucial to prevent data breaches.
 • Downtime: Migration can lead to system downtime, affecting business operations. Planning   and executing the migration in phases
