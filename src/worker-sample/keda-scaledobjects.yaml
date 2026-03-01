@@ -1,0 +1,133 @@
+# ============================================================
+# KEDA ScaledObjects for Service Bus Worker Pools
+# Auth: Workload Identity (Managed Identity — no secrets)
+# ============================================================
+
+---
+# ── TriggerAuthentication (shared by all workers) ────────────
+# Uses AKS Workload Identity → KEDA reads Service Bus metrics
+# via Managed Identity — zero credentials stored in cluster
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: keda-servicebus-workload-identity
+  namespace: order-platform
+spec:
+  podIdentity:
+    provider: azure-workload
+    identityId: "<managed-identity-client-id>"  # Replace with your MI client ID
+
+---
+# ── Payment Worker Pool ───────────────────────────────────────
+# Scales 0→20 based on Service Bus subscription message count
+# 1 replica per 50 messages (payment is heavyweight — cap lower)
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: payment-worker-scaledobject
+  namespace: order-platform
+  labels:
+    app: payment-worker
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: payment-worker
+  minReplicaCount: 0          # Scale to zero when queue empty
+  maxReplicaCount: 20         # Hard cap — protect payment gateway (200 RPS limit)
+  pollingInterval: 15         # Check queue depth every 15 seconds
+  cooldownPeriod: 300         # Wait 5 min before scaling in (avoid thrashing)
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        topicName: orders
+        subscriptionName: payment-subscription
+        namespace: "<servicebus-namespace>.servicebus.windows.net"
+        messageCount: "50"    # Target: 1 pod per 50 messages
+        cloud: AzurePublicCloud
+      authenticationRef:
+        name: keda-servicebus-workload-identity
+
+---
+# ── Inventory Worker Pool ─────────────────────────────────────
+# Higher concurrency — inventory checks are lighter weight
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: inventory-worker-scaledobject
+  namespace: order-platform
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: inventory-worker
+  minReplicaCount: 0
+  maxReplicaCount: 30
+  pollingInterval: 15
+  cooldownPeriod: 180         # 3 min cool-down
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        topicName: orders
+        subscriptionName: inventory-subscription
+        namespace: "<servicebus-namespace>.servicebus.windows.net"
+        messageCount: "100"   # Higher threshold — inventory workers are faster
+      authenticationRef:
+        name: keda-servicebus-workload-identity
+
+---
+# ── Notification Worker Pool ──────────────────────────────────
+# Highest parallelism — send email/SMS is fast and stateless
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: notification-worker-scaledobject
+  namespace: order-platform
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notification-worker
+  minReplicaCount: 0
+  maxReplicaCount: 50
+  pollingInterval: 10
+  cooldownPeriod: 120
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        topicName: orders
+        subscriptionName: notification-subscription
+        namespace: "<servicebus-namespace>.servicebus.windows.net"
+        messageCount: "200"
+      authenticationRef:
+        name: keda-servicebus-workload-identity
+
+---
+# ── Business Hours Minimum Replicas (avoid cold start) ───────
+# CronTrigger sets minimum to 2 during 06:00–22:00 IST
+# Outside hours: falls back to minReplicaCount: 0
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: payment-worker-business-hours
+  namespace: order-platform
+spec:
+  scaleTargetRef:
+    name: payment-worker
+  minReplicaCount: 0
+  maxReplicaCount: 20
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Asia/Kolkata
+        start: "0 6 * * 1-5"   # 06:00 IST Mon-Fri
+        end: "0 22 * * 1-5"    # 22:00 IST Mon-Fri
+        desiredReplicas: "2"   # Keep 2 warm during business hours
+    - type: azure-servicebus
+      metadata:
+        topicName: orders
+        subscriptionName: payment-subscription
+        namespace: "<servicebus-namespace>.servicebus.windows.net"
+        messageCount: "50"
+      authenticationRef:
+        name: keda-servicebus-workload-identity
